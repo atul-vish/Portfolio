@@ -1,0 +1,224 @@
+.section {
+  position: relative;
+  z-index: 2;
+  padding: 9rem 4vw;
+  overflow: hidden;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Header ── */
+.header {
+  margin-bottom: 4rem;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-orange);
+  margin-bottom: 1rem;
+}
+
+.headerRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4vw;
+  align-items: end;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--color-white);
+}
+
+.heading em {
+  font-style: normal;
+  color: var(--color-orange);
+}
+
+.sub {
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--color-white-dim);
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5px;
+  background: rgba(245,242,238,0.06);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ── Card ── */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 2.5rem;
+  background: rgba(8,8,8,0.75);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: background 0.3s;
+  cursor: pointer;
+}
+
+.card:hover {
+  background: rgba(12,12,12,0.82);
+}
+
+.card:hover .cardGlow {
+  opacity: 1;
+}
+
+.card:hover .cardArrow {
+  color: var(--accent, var(--color-orange));
+  transform: translate(3px, -3px);
+}
+
+.card:hover .cardTitle {
+  color: var(--accent, var(--color-orange));
+}
+
+/* Featured spans full width */
+.featured {
+  grid-column: span 2;
+  flex-direction: row;
+  gap: 3rem;
+  align-items: flex-start;
+  padding: 3rem;
+}
+
+.featured .cardTop { flex: 0 0 260px; }
+.featured .cardDesc { flex: 1; margin-top: 0.2rem; }
+
+/* Card elements */
+.cardId {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--color-white-faint);
+  position: absolute;
+  top: 1.5rem;
+  right: 1.75rem;
+}
+
+.cardTop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.cardTag {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent, var(--color-orange));
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  letter-spacing: 0.02em;
+  color: var(--color-white);
+  transition: color 0.25s;
+  line-height: 1;
+}
+
+.cardDesc {
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: var(--color-white-dim);
+  flex: 1;
+}
+
+.cardStack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+}
+
+.stackPill {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--color-white-faint);
+  border: 1px solid rgba(245,242,238,0.1);
+  padding: 0.22rem 0.55rem;
+  border-radius: 3px;
+}
+
+.cardArrow {
+  position: absolute;
+  top: 1.5rem;
+  left: 2.5rem;
+  color: var(--color-white-faint);
+  transition: color 0.25s, transform 0.25s;
+}
+
+.featured .cardArrow { display: none; }
+
+/* Hover glow */
+.cardGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% 100%, var(--accent, rgba(244,114,43,0.15)) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+/* ── View all ── */
+.viewAll {
+  display: flex;
+  justify-content: center;
+  margin-top: 3.5rem;
+}
+
+.viewAllBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-white-dim);
+  border-bottom: 1px solid rgba(245,242,238,0.2);
+  padding-bottom: 0.25rem;
+  transition: color 0.2s, border-color 0.2s, gap 0.2s;
+}
+
+.viewAllBtn:hover {
+  color: var(--color-orange);
+  border-color: var(--color-orange);
+  gap: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .headerRow { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; }
+  .featured { grid-column: span 1; flex-direction: column; }
+  .featured .cardTop { flex: unset; }
+}
+
+@media (max-width: 480px) {
+  .section { padding: 6rem 6vw; }
+  .card { padding: 2rem 1.5rem; }
+}
