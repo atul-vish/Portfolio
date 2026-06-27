@@ -175,7 +175,7 @@ export default function ParticleTransition() {
           scrub:   true,
           onUpdate: self => {
             const p = self.progress
-            const op = Math.min(p / 0.2, 1) * (1 - Math.max(0, (p - 0.85) / 0.15))
+            const op = Math.min(p / 0.2, 1)
             textRef.current.style.opacity = op
           }
         })
@@ -195,7 +195,6 @@ export default function ParticleTransition() {
 
         // ── Nucleus: glow in at sp > 0.05, pulse ───────────
         const nucleusOp = Math.min(Math.max((sp - 0.05) / 0.15, 0), 1)
-          * (1 - Math.max((sp - 0.9) / 0.1, 0))
         nucleusMat.opacity = nucleusOp
         haloMat.opacity    = nucleusOp * 0.5
         // Pulse
@@ -203,29 +202,28 @@ export default function ParticleTransition() {
         nucleus.scale.setScalar(pulse)
         halo.scale.setScalar(1 + Math.sin(t * 2.8) * 0.3 * nucleusOp)
 
-        // ── Grow each tendril based on scroll ──────────────
+        // ── Grow tendrils — grow fast, STAY fully extended (no retraction) ──
         tendrils.forEach(td => {
-          // Each tendril starts growing at its own delay, grows until sp=0.7
-          const startAt = 0.05 + td.delay * 0.35
-          const localP  = Math.max(0, Math.min((sp - startAt) / (0.65 * td.speed), 1))
+          const startAt = 0.04 + td.delay * 0.25
+          const growEnd = startAt + 0.18 * td.speed
+          const growP   = Math.max(0, Math.min((sp - startAt) / (growEnd - startAt), 1))
 
-          // Ease in-out
-          const eased = localP < 0.5
-            ? 2 * localP * localP
-            : -1 + (4 - 2 * localP) * localP
+          // Ease-out: decelerates as it reaches full length
+          const eased = 1 - Math.pow(1 - growP, 3)
 
+          // Once grown → stay at full extension, never retract
           const drawCount = Math.floor(eased * td.totalPoints)
-          td.geo.setDrawRange(0, drawCount)
+          if (!td.prevDraw) td.prevDraw = 0
+          td.prevDraw = Math.max(drawCount, td.prevDraw)
+          td.geo.setDrawRange(0, td.prevDraw)
 
-          // Tip sphere — appears at end, fades at sp > 0.85
-          const tipOp = localP > 0.9
-            ? Math.min((localP - 0.9) / 0.1, 1) * (1 - Math.max((sp - 0.85) / 0.15, 0))
-            : 0
-          td.tipMat.opacity = tipOp
+          // Tip sphere appears when fully grown and stays
+          td.tipMat.opacity = growP > 0.85 ? Math.min((growP - 0.85) / 0.15, 1) : 0
 
-          // Gentle sway
-          if (localP > 0) {
-            td.line.rotation.z = Math.sin(t * 0.4 + td.delay * 5) * 0.015 * localP
+          // Continuous gentle organic wave motion — alive the whole time
+          if (growP > 0) {
+            td.line.rotation.z = Math.sin(t * 0.5 + td.delay * 6.28) * 0.022
+            td.line.rotation.x = Math.cos(t * 0.35 + td.delay * 4.0) * 0.014
           }
         })
 
