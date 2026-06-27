@@ -1,0 +1,312 @@
+/* ── Section wrapper — full viewport, pinned by GSAP ── */
+.section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #060606;
+}
+
+/* ── Three.js canvas ── */
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* ── Gradient blends with adjacent sections ── */
+.gradTop {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 16%;
+  background: linear-gradient(to bottom, #080808 0%, transparent 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.gradBottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 16%;
+  background: linear-gradient(to top, #080808 0%, transparent 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ── Edge vignette ── */
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(6,6,6,0.75) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════
+   ABOUT OVERLAY — fades in when particles scatter
+══════════════════════════════════════════════════════ */
+.aboutOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  opacity: 0;
+  transition: transform 0.05s linear;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6rem 4vw 0;
+  pointer-events: none;   /* disabled until visible */
+  background: radial-gradient(ellipse 70% 60% at 30% 50%, rgba(244,114,43,0.07) 0%, transparent 70%);
+}
+
+.aboutOverlay[style*="opacity: 1"],
+.aboutOverlay[style*="opacity:1"] {
+  pointer-events: all;
+}
+
+/* Ambient orange glow */
+.glow {
+  position: absolute;
+  top: -15%;
+  right: -10%;
+  width: 55vw;
+  height: 55vw;
+  background: radial-gradient(circle, rgba(244,114,43,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Two-column inner ── */
+.inner {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 5vw;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Image ── */
+.imageWrap {
+  position: relative;
+}
+
+.imageFrame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  box-shadow:
+    0 0 0 1px rgba(244,114,43,0.15),
+    0 40px 80px rgba(0,0,0,0.6),
+    0 0 60px rgba(244,114,43,0.08);
+}
+
+.imageBorder {
+  position: absolute;
+  inset: -1px;
+  border-radius: 17px;
+  border: 1px solid rgba(244,114,43,0.22);
+  pointer-events: none;
+}
+
+/* Orange glow under image */
+.imageGlow {
+  position: absolute;
+  bottom: -20px;
+  left: 10%;
+  right: 10%;
+  height: 40px;
+  background: radial-gradient(ellipse, rgba(244,114,43,0.35) 0%, transparent 70%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+.accentLine {
+  position: absolute;
+  bottom: -1.2rem;
+  left: 1.8rem;
+  width: 56px;
+  height: 3px;
+  background: var(--color-orange);
+  border-radius: 999px;
+}
+
+/* ── Text column ── */
+.textCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.63rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-orange);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4.5vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  color: var(--color-white);
+}
+
+.heading em {
+  font-style: normal;
+  color: var(--color-orange);
+}
+
+.body {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--color-white-dim);
+  max-width: 460px;
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.2rem;
+}
+
+.tag {
+  font-size: 0.67rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-white-dim);
+  border: 1px solid rgba(245,242,238,0.14);
+  padding: 0.28rem 0.7rem;
+  border-radius: 4px;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.tag:hover {
+  border-color: var(--color-orange);
+  color: var(--color-orange);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-white);
+  border: 1px solid var(--color-orange);
+  padding: 0.72rem 1.5rem;
+  border-radius: 6px;
+  width: fit-content;
+  transition: background 0.2s, color 0.2s, gap 0.2s;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--color-orange);
+  color: #080808;
+  gap: 0.9rem;
+}
+
+/* ── Stats row ── */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  max-width: 1200px;
+  margin: 1.8rem auto 0;
+  width: 100%;
+  border: 1px solid rgba(245,242,238,0.07);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(245,242,238,0.07);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.4rem 1rem;
+  background: rgba(8,8,8,0.75);
+  gap: 0.3rem;
+  transition: background 0.2s;
+}
+
+.stat:hover { background: rgba(244,114,43,0.06); }
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  color: var(--color-orange);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-white-faint);
+}
+
+/* ── Scroll hint ── */
+.scrollHint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  pointer-events: none;
+}
+
+.scrollHint span {
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-white-faint);
+}
+
+.scrollLine {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, var(--color-orange), transparent);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1;   transform: scaleY(1); }
+  50%       { opacity: 0.2; transform: scaleY(0.5); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .imageFrame { aspect-ratio: 4/3; max-width: 380px; margin: 0 auto; }
+  .statsRow   { grid-template-columns: repeat(2, 1fr); }
+  .aboutOverlay { padding: 5rem 6vw 0; }
+}
+
+@media (max-width: 480px) {
+  .heading { font-size: 2rem; }
+  .statsRow { grid-template-columns: repeat(2, 1fr); }
+}
