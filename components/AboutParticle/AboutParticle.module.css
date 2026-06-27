@@ -1,94 +1,141 @@
-/* ── Section wrapper — full viewport, pinned by GSAP ── */
+/* ── Pinned section ── */
 .section {
   position: relative;
   width: 100%;
   height: 100vh;
+  min-height: 100svh;
   overflow: hidden;
   background: #060606;
 }
 
-/* ── Three.js canvas ── */
+/* ══════════════════════════════════════════════════════
+   REAL AVATAR — centered, visible at start
+══════════════════════════════════════════════════════ */
+.avatarCenter {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.avatarFrame {
+  position: relative;
+  width: min(42vw, 340px);
+  aspect-ratio: 3/4;
+  border-radius: 18px;
+  overflow: hidden;
+  transition: opacity 0.05s linear;
+  box-shadow:
+    0 0 0 1px rgba(244,114,43,0.2),
+    0 30px 70px rgba(0,0,0,0.7);
+}
+
+/* Subtle pulsing ring around avatar */
+.avatarRing {
+  position: absolute;
+  inset: -3px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(244,114,43,0.4);
+  pointer-events: none;
+  animation: ringPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%       { opacity: 0.9; transform: scale(1.008); }
+}
+
+/* Warm glow below avatar */
+.avatarGlow {
+  position: absolute;
+  bottom: -30px;
+  left: 5%;
+  right: 5%;
+  height: 50px;
+  background: radial-gradient(ellipse, rgba(244,114,43,0.5) 0%, transparent 70%);
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+/* ── Three.js canvas (particles on top of image) ── */
 .canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 3;   /* above real image, below about overlay */
 }
 
-/* ── Gradient blends with adjacent sections ── */
+/* ── Gradient blends ── */
 .gradTop {
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 16%;
+  height: 14%;
   background: linear-gradient(to bottom, #080808 0%, transparent 100%);
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
 }
 
 .gradBottom {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 16%;
+  height: 14%;
   background: linear-gradient(to top, #080808 0%, transparent 100%);
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
 }
 
-/* ── Edge vignette ── */
+/* Edge vignette — keeps focus central */
 .vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(6,6,6,0.75) 100%);
-  z-index: 2;
+  background: radial-gradient(ellipse 85% 85% at 50% 50%, transparent 38%, rgba(6,6,6,0.82) 100%);
+  z-index: 4;
   pointer-events: none;
 }
 
 /* ══════════════════════════════════════════════════════
-   ABOUT OVERLAY — fades in when particles scatter
+   ABOUT OVERLAY
 ══════════════════════════════════════════════════════ */
 .aboutOverlay {
   position: absolute;
   inset: 0;
   z-index: 10;
   opacity: 0;
-  transition: transform 0.05s linear;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 6rem 4vw 0;
-  pointer-events: none;   /* disabled until visible */
-  background: radial-gradient(ellipse 70% 60% at 30% 50%, rgba(244,114,43,0.07) 0%, transparent 70%);
+  padding: 5.5rem clamp(1.5rem, 4vw, 4rem) 0;
+  will-change: opacity, transform;
+  background: radial-gradient(ellipse 65% 55% at 28% 52%, rgba(244,114,43,0.06) 0%, transparent 70%);
 }
 
-.aboutOverlay[style*="opacity: 1"],
-.aboutOverlay[style*="opacity:1"] {
-  pointer-events: all;
-}
-
-/* Ambient orange glow */
+/* Ambient top-right glow */
 .glow {
   position: absolute;
-  top: -15%;
-  right: -10%;
-  width: 55vw;
-  height: 55vw;
-  background: radial-gradient(circle, rgba(244,114,43,0.08) 0%, transparent 70%);
+  top: -10%;
+  right: -8%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(244,114,43,0.07) 0%, transparent 70%);
   pointer-events: none;
 }
 
-/* ── Two-column inner ── */
+/* ── Two-column grid ── */
 .inner {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 5vw;
+  grid-template-columns: 1fr 1.2fr;
+  gap: clamp(2rem, 5vw, 5rem);
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }
 
-/* ── Image ── */
+/* ── Image (inside overlay) ── */
 .imageWrap {
   position: relative;
 }
@@ -101,51 +148,49 @@
   overflow: hidden;
   background: #111;
   box-shadow:
-    0 0 0 1px rgba(244,114,43,0.15),
-    0 40px 80px rgba(0,0,0,0.6),
-    0 0 60px rgba(244,114,43,0.08);
+    0 0 0 1px rgba(244,114,43,0.18),
+    0 40px 80px rgba(0,0,0,0.65),
+    0 0 50px rgba(244,114,43,0.07);
 }
 
 .imageBorder {
   position: absolute;
   inset: -1px;
   border-radius: 17px;
-  border: 1px solid rgba(244,114,43,0.22);
+  border: 1px solid rgba(244,114,43,0.25);
   pointer-events: none;
 }
 
-/* Orange glow under image */
 .imageGlow {
   position: absolute;
-  bottom: -20px;
-  left: 10%;
-  right: 10%;
-  height: 40px;
-  background: radial-gradient(ellipse, rgba(244,114,43,0.35) 0%, transparent 70%);
-  filter: blur(12px);
+  bottom: -22px;
+  left: 8%;
+  right: 8%;
+  height: 42px;
+  background: radial-gradient(ellipse, rgba(244,114,43,0.4) 0%, transparent 70%);
+  filter: blur(14px);
   pointer-events: none;
 }
 
 .accentLine {
   position: absolute;
-  bottom: -1.2rem;
-  left: 1.8rem;
-  width: 56px;
+  bottom: -1.1rem;
+  left: 1.6rem;
+  width: 52px;
   height: 3px;
   background: var(--color-orange);
   border-radius: 999px;
 }
 
-/* ── Text column ── */
+/* ── Text ── */
 .textCol {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: clamp(0.8rem, 1.5vh, 1.2rem);
 }
 
 .eyebrow {
-  display: inline-block;
-  font-size: 0.63rem;
+  font-size: 0.62rem;
   font-weight: 500;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -154,8 +199,8 @@
 
 .heading {
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 4.5vw, 4rem);
-  line-height: 1.02;
+  font-size: clamp(2rem, 4vw, 3.8rem);
+  line-height: 1.0;
   letter-spacing: 0.01em;
   color: var(--color-white);
 }
@@ -166,29 +211,29 @@
 }
 
 .body {
-  font-size: 0.9rem;
-  line-height: 1.8;
+  font-size: clamp(0.8rem, 1.3vw, 0.92rem);
+  line-height: 1.78;
   color: var(--color-white-dim);
-  max-width: 460px;
+  max-width: 450px;
 }
 
 .tagRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-top: 0.2rem;
+  gap: 0.4rem;
 }
 
 .tag {
-  font-size: 0.67rem;
+  font-size: 0.65rem;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-white-dim);
-  border: 1px solid rgba(245,242,238,0.14);
-  padding: 0.28rem 0.7rem;
+  border: 1px solid rgba(245,242,238,0.13);
+  padding: 0.26rem 0.65rem;
   border-radius: 4px;
   transition: border-color 0.2s, color 0.2s;
+  cursor: default;
 }
 
 .tag:hover {
@@ -200,33 +245,30 @@
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--color-white);
   border: 1px solid var(--color-orange);
-  padding: 0.72rem 1.5rem;
+  padding: 0.7rem 1.4rem;
   border-radius: 6px;
   width: fit-content;
-  transition: background 0.2s, color 0.2s, gap 0.2s;
+  transition: background 0.22s, color 0.22s, gap 0.22s;
   cursor: pointer;
+  margin-top: 0.2rem;
 }
 
-.btn:hover {
-  background: var(--color-orange);
-  color: #080808;
-  gap: 0.9rem;
-}
+.btn:hover { background: var(--color-orange); color: #080808; gap: 0.9rem; }
 
-/* ── Stats row ── */
+/* ── Stats ── */
 .statsRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   max-width: 1200px;
-  margin: 1.8rem auto 0;
+  margin: clamp(1rem, 2.5vh, 2rem) auto 0;
   width: 100%;
   border: 1px solid rgba(245,242,238,0.07);
   border-radius: 12px;
@@ -238,34 +280,34 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.4rem 1rem;
-  background: rgba(8,8,8,0.75);
-  gap: 0.3rem;
+  padding: clamp(0.8rem, 2vh, 1.5rem) 0.5rem;
+  background: rgba(8,8,8,0.72);
+  gap: 0.25rem;
   transition: background 0.2s;
 }
 
-.stat:hover { background: rgba(244,114,43,0.06); }
+.stat:hover { background: rgba(244,114,43,0.07); }
 
 .statValue {
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-size: clamp(1.6rem, 3vw, 2.8rem);
   color: var(--color-orange);
-  letter-spacing: 0.02em;
   line-height: 1;
 }
 
 .statLabel {
-  font-size: 0.62rem;
+  font-size: clamp(0.55rem, 0.9vw, 0.65rem);
   font-weight: 400;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-white-faint);
+  text-align: center;
 }
 
 /* ── Scroll hint ── */
 .scrollHint {
   position: absolute;
-  bottom: 2rem;
+  bottom: 1.8rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
@@ -277,7 +319,7 @@
 }
 
 .scrollHint span {
-  font-size: 0.55rem;
+  font-size: 0.52rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-white-faint);
@@ -285,9 +327,9 @@
 
 .scrollLine {
   width: 1px;
-  height: 32px;
+  height: 30px;
   background: linear-gradient(to bottom, var(--color-orange), transparent);
-  animation: pulse 1.4s ease-in-out infinite;
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse {
@@ -295,18 +337,49 @@
   50%       { opacity: 0.2; transform: scaleY(0.5); }
 }
 
-/* ── Responsive ── */
+/* ═══════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════ */
 @media (max-width: 900px) {
   .inner {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 2rem;
+    overflow-y: auto;
   }
-  .imageFrame { aspect-ratio: 4/3; max-width: 380px; margin: 0 auto; }
-  .statsRow   { grid-template-columns: repeat(2, 1fr); }
-  .aboutOverlay { padding: 5rem 6vw 0; }
+
+  .imageFrame {
+    aspect-ratio: 4/3;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .imageGlow, .accentLine { display: none; }
+
+  .statsRow { grid-template-columns: repeat(2, 1fr); }
+
+  .body { max-width: 100%; }
+
+  .avatarFrame {
+    width: min(55vw, 260px);
+  }
+
+  .aboutOverlay {
+    padding: 4.5rem 6vw 0;
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
 }
 
 @media (max-width: 480px) {
-  .heading { font-size: 2rem; }
+  .heading { font-size: 1.8rem; }
   .statsRow { grid-template-columns: repeat(2, 1fr); }
+  .avatarFrame { width: 65vw; }
+  .inner { gap: 1.5rem; }
+  .aboutOverlay { padding: 4rem 5vw 0; }
+}
+
+@media (max-height: 700px) {
+  .aboutOverlay { padding-top: 4rem; }
+  .statsRow { display: none; }  /* hide stats on very short screens */
+  .body:last-of-type { display: none; }
 }
