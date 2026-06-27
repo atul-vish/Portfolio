@@ -1,0 +1,133 @@
+.section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #050505;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Three.js canvas — fullscreen */
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Gradients to blend into adjacent sections */
+.gradTop {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 22%;
+  background: linear-gradient(to bottom, #080808 0%, transparent 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.gradBottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 22%;
+  background: linear-gradient(to top, #080808 0%, transparent 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Cinematic text overlay */
+.textWrap {
+  position: absolute;
+  bottom: 12vh;
+  left: 5vw;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  pointer-events: none;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-orange);
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 12vw, 11rem);
+  line-height: 0.88;
+  letter-spacing: 0.02em;
+  color: var(--color-white);
+  opacity: 0;
+  transition: opacity 0.1s;
+  text-shadow:
+    0 0 60px rgba(244,114,43,0.25),
+    0 0 120px rgba(244,114,43,0.1);
+}
+
+.name span {
+  color: var(--color-orange);
+}
+
+.sub {
+  font-family: var(--font-body);
+  font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-white-dim);
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+/* Scroll hint — bottom center */
+.scrollHint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.scrollHint span {
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-white-faint);
+}
+
+.scrollBar {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, var(--color-orange), transparent);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1;   transform: scaleY(1); }
+  50%       { opacity: 0.3; transform: scaleY(0.6); }
+}
+
+@media (max-width: 768px) {
+  .textWrap {
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+    text-align: center;
+    bottom: 10vh;
+    width: 90%;
+  }
+}
