@@ -193,7 +193,7 @@ export default function AboutParticle() {
       ScrollTrigger.create({
         trigger: section,
         start:   'top top',
-        end:     '+=400%',
+        end:     '+=250%',
         pin:     true,
         scrub:   2,            // higher = smoother lag
         anticipatePin: 1,
@@ -212,10 +212,9 @@ export default function AboutParticle() {
           // ── About overlay ──────────────────────────────────────
           const aboutEl = aboutRef.current
           if (aboutEl) {
-            // Fades in 0.38→0.55, stays visible, fades out 0.82→0.95
+            // Fades in 0.38→0.55, stays visible permanently — no reassembly
             const fadeIn  = Math.max(0, Math.min((sp - 0.38) / 0.17, 1))
-            const fadeOut = 1 - Math.max(0, Math.min((sp - 0.82) / 0.13, 1))
-            const op = easeOutCubic(fadeIn) * fadeOut
+            const op = easeOutCubic(fadeIn)
             aboutEl.style.opacity = op
             aboutEl.style.transform = fadeIn < 1
               ? `translateY(${(1-easeOutCubic(fadeIn))*24}px)`
@@ -225,7 +224,7 @@ export default function AboutParticle() {
           // Orange bokeh during scatter phase
           bokehMat.opacity = Math.min(
             Math.max((sp - 0.22) / 0.18, 0), 0.5
-          ) * (1 - Math.max((sp - 0.78) / 0.22, 0))
+          )
         }
       })
 
@@ -241,17 +240,15 @@ export default function AboutParticle() {
         const sp = progressRef.current
 
         // ── Global scatter progress ────────────────────────────
-        // Phase: 0→0.18 assembled, 0.18→0.55 exploding, 0.55→0.72 scattered, 0.72→1.0 reassembling
+        // Phase: 0→0.18 assembled, 0.18→0.55 scattering, 0.55→1.0 STAY scattered (no reassembly)
         let globalT
 
         if (sp < 0.18) {
           globalT = 0
         } else if (sp < 0.55) {
           globalT = (sp - 0.18) / 0.37
-        } else if (sp < 0.72) {
-          globalT = 1
         } else {
-          globalT = 1 - easeInOutQuart((sp - 0.72) / 0.28)
+          globalT = 1   // fully scattered — stays here until section unpins
         }
 
         // Particles opacity: fade in as scatter begins, stay visible through reassemble
@@ -267,9 +264,7 @@ export default function AboutParticle() {
           // Outer particles scatter first → wave from edge to center
           const delay     = particleDelays[i] * 0.45
           const localT    = Math.max(0, Math.min((globalT - delay) / (1 - delay * 0.5), 1))
-          const ease      = globalT < 0.72
-            ? easeOutCubic(localT)
-            : easeInOutQuart(localT)
+          const ease      = easeOutCubic(localT)
 
           // Smooth noise drift when fully assembled or fully scattered
           const drift = Math.sin(t * 0.8 + i * 0.031) * 0.003 * (1 - Math.abs(ease - 0.5) * 2)
