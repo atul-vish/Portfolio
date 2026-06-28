@@ -27,10 +27,13 @@
   aspect-ratio: 3/4;
   border-radius: 18px;
   overflow: hidden;
-  transition: opacity 0.05s linear;
+  /* No CSS transition — JS controls opacity/blur/scale directly for scroll-sync */
+  will-change: opacity, filter, transform;
+  transform-origin: center center;
   box-shadow:
     0 0 0 1px rgba(244,114,43,0.2),
-    0 30px 70px rgba(0,0,0,0.7);
+    0 30px 70px rgba(0,0,0,0.7),
+    0 0 60px rgba(244,114,43,0.1);
 }
 
 /* Subtle pulsing ring around avatar */
