@@ -384,19 +384,25 @@ export default function AboutParticle() {
               )}
             </div>
 
-            {/* Flip button */}
-            <button
-              className={`${styles.flipBtn} ${flipped ? styles.flipBtnActive : ''}`}
-              onClick={handleFlip}
-              aria-label={flipped ? 'Show avatar' : 'Show real photo'}
-            >
-              <svg className={styles.flipIcon} width="15" height="15" viewBox="0 0 16 16" fill="none">
-                <path d="M1 4C1 4 3 1 8 1s7 3 7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                <path d="M15 12c0 0-2 3-7 3s-7-3-7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                <path d="M12 1l3 3-3 3M4 9l-3 3 3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              <span>{flipped ? 'Avatar' : 'Real Me'}</span>
-            </button>
+            {/* Centered flip button overlay — sits on top of both card faces */}
+            <div className={styles.flipBtnOverlay}>
+              <button
+                className={`${styles.flipBtn} ${flipped ? styles.flipBtnActive : ''}`}
+                onClick={handleFlip}
+                aria-label={flipped ? 'Show avatar' : 'Show real photo'}
+              >
+                {/* Pulsing rings */}
+                <span className={styles.flipRing1} />
+                <span className={styles.flipRing2} />
+                {/* Icon */}
+                <svg className={styles.flipIcon} width="18" height="18" viewBox="0 0 16 16" fill="none">
+                  <path d="M1 4C1 4 3 1 8 1s7 3 7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M15 12c0 0-2 3-7 3s-7-3-7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M12 1l3 3-3 3M4 9l-3 3 3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span className={styles.flipLabel}>{flipped ? 'Avatar' : 'Real Me'}</span>
+              </button>
+            </div>
 
             <div className={styles.imageBorder} />
             <div className={styles.imageGlow}   />
