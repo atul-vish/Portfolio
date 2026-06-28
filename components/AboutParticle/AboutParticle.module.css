@@ -565,29 +565,7 @@
   line-height: 1;
 }
 
-/* ── Pulsing rings around button ── */
-.flipRing1,
-.flipRing2 {
-  position: absolute;
-  inset: -8px;
-  border-radius: 22px;
-  border: 1.5px solid rgba(244,114,43,0.5);
-  animation: ringExpand 2s ease-out infinite;
-  pointer-events: none;
-}
 
-.flipRing2 {
-  inset: -16px;
-  border-radius: 26px;
-  border-color: rgba(244,114,43,0.25);
-  animation-delay: 0.5s;
-}
-
-@keyframes ringExpand {
-  0%   { opacity: 0.9; transform: scale(1); }
-  70%  { opacity: 0.15; }
-  100% { opacity: 0;   transform: scale(1.18); }
-}
 
 /* ── Remove old imageFrame aspect-ratio (flipCard takes over) ── */
 .flipFront .imageFrame,
