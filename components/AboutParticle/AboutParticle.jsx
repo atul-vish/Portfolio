@@ -391,9 +391,6 @@ export default function AboutParticle() {
                 onClick={handleFlip}
                 aria-label={flipped ? 'Show avatar' : 'Show real photo'}
               >
-                {/* Pulsing rings */}
-                <span className={styles.flipRing1} />
-                <span className={styles.flipRing2} />
                 {/* Icon */}
                 <svg className={styles.flipIcon} width="18" height="18" viewBox="0 0 16 16" fill="none">
                   <path d="M1 4C1 4 3 1 8 1s7 3 7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
