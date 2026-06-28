@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Image from 'next/image'
@@ -22,6 +22,22 @@ export default function AboutParticle() {
   const avatarImgRef= useRef(null)   // real <img> that fades as particles leave
   const aboutRef    = useRef(null)
   const progressRef = useRef(0)
+  const [flipped, setFlipped] = useState(false)
+  const [flipping, setFlipping] = useState(false)
+  const [particles, setParticles] = useState(false)
+
+  const handleFlip = useCallback(() => {
+    if (flipping) return
+    setFlipping(true)
+    setParticles(true)
+    setTimeout(() => {
+      setFlipped(f => !f)
+      setTimeout(() => {
+        setFlipping(false)
+        setTimeout(() => setParticles(false), 600)
+      }, 150)
+    }, 350)
+  }, [flipping])
 
   useEffect(() => {
     let THREE, renderer, scene, camera, animId
@@ -352,18 +368,72 @@ export default function AboutParticle() {
 
         <div className={styles.inner}>
 
-          {/* Left: high-quality avatar */}
+          {/* Left: flip card */}
           <div className={styles.imageWrap}>
-            <div className={styles.imageFrame}>
-              <Image
-                src="/portfolio-image.png"
-                alt="Atul — AI/ML Engineer"
-                fill
-                style={{ objectFit: 'cover', objectPosition: 'center 8%' }}
-                quality={100}
-                priority
-              />
+            <div className={`${styles.flipCard} ${flipped ? styles.flipCardFlipped : ''}`}>
+
+              {/* ── FRONT: Avatar ── */}
+              <div className={styles.flipFront}>
+                <div className={styles.imageFrame}>
+                  <Image
+                    src="/portfolio-image.png"
+                    alt="Atul — AI/ML Engineer"
+                    fill
+                    style={{ objectFit: 'cover', objectPosition: 'center 8%' }}
+                    quality={100}
+                    priority
+                  />
+                </div>
+                {/* Scan line effect during flip */}
+                {flipping && <div className={styles.scanLine} />}
+              </div>
+
+              {/* ── BACK: Real photo ── */}
+              <div className={styles.flipBack}>
+                <div className={styles.imageFrame}>
+                  <Image
+                    src="/atul-real.jpg"
+                    alt="Atul — Real Photo"
+                    fill
+                    style={{ objectFit: 'cover', objectPosition: 'center 15%' }}
+                    quality={100}
+                  />
+                  {/* Warm overlay on real photo */}
+                  <div className={styles.realOverlay} />
+                </div>
+                {flipping && <div className={styles.scanLine} />}
+              </div>
+
+              {/* ── Particle burst during flip ── */}
+              {particles && (
+                <div className={styles.burstWrap} aria-hidden="true">
+                  {Array.from({ length: 16 }).map((_, i) => (
+                    <div key={i} className={styles.burstDot}
+                      style={{
+                        '--angle': `${i * 22.5}deg`,
+                        '--delay': `${i * 0.025}s`,
+                        '--size': `${4 + (i % 3) * 3}px`,
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
+
+            {/* Flip button */}
+            <button
+              className={`${styles.flipBtn} ${flipped ? styles.flipBtnActive : ''}`}
+              onClick={handleFlip}
+              aria-label={flipped ? 'Show avatar' : 'Show real photo'}
+            >
+              <svg className={styles.flipIcon} width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M1 4C1 4 3 1 8 1s7 3 7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M15 12c0 0-2 3-7 3s-7-3-7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M12 1l3 3-3 3M4 9l-3 3 3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>{flipped ? 'Avatar' : 'Real Me'}</span>
+            </button>
+
             <div className={styles.imageBorder} />
             <div className={styles.imageGlow}   />
             <div className={styles.accentLine}  />

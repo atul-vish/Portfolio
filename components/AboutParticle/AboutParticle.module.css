@@ -383,3 +383,164 @@
   .statsRow { display: none; }  /* hide stats on very short screens */
   .body:last-of-type { display: none; }
 }
+
+/* ══════════════════════════════════════════════════════
+   FLIP CARD
+══════════════════════════════════════════════════════ */
+.flipCard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3/4;
+  transform-style: preserve-3d;
+  transition: transform 0.75s cubic-bezier(0.4, 0.2, 0.2, 1);
+  cursor: pointer;
+  border-radius: 16px;
+}
+
+.flipCardFlipped {
+  transform: rotateY(180deg);
+}
+
+.flipFront,
+.flipBack {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.flipBack {
+  transform: rotateY(180deg);
+}
+
+/* ── Scan line effect during flip ── */
+.scanLine {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(244, 114, 43, 0.12) 48%,
+    rgba(244, 114, 43, 0.35) 50%,
+    rgba(244, 114, 43, 0.12) 52%,
+    transparent 100%
+  );
+  background-size: 100% 200%;
+  animation: scanMove 0.5s ease-in-out forwards;
+  pointer-events: none;
+}
+
+@keyframes scanMove {
+  0%   { background-position: 0% 0%;   opacity: 0; }
+  20%  { opacity: 1; }
+  100% { background-position: 0% 100%; opacity: 0; }
+}
+
+/* ── Real photo warm overlay ── */
+.realOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(244, 114, 43, 0.08) 0%,
+    transparent 60%,
+    rgba(80, 140, 220, 0.06) 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Burst particles ── */
+.burstWrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.burstDot {
+  position: absolute;
+  width: var(--size, 5px);
+  height: var(--size, 5px);
+  border-radius: 50%;
+  background: var(--color-orange);
+  transform: rotate(var(--angle)) translateX(0px);
+  animation: burst 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) var(--delay, 0s) forwards;
+  box-shadow: 0 0 8px var(--color-orange), 0 0 16px rgba(244,114,43,0.5);
+}
+
+/* Every 3rd dot is white */
+.burstDot:nth-child(3n) {
+  background: #fff;
+  box-shadow: 0 0 8px #fff, 0 0 16px rgba(255,255,255,0.4);
+}
+
+@keyframes burst {
+  0%   { transform: rotate(var(--angle)) translateX(0px);   opacity: 1; }
+  60%  { transform: rotate(var(--angle)) translateX(60px);  opacity: 0.8; }
+  100% { transform: rotate(var(--angle)) translateX(90px);  opacity: 0; }
+}
+
+/* ── Flip button ── */
+.flipBtn {
+  position: absolute;
+  bottom: -1rem;
+  right: 1rem;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(244,114,43,0.5);
+  background: rgba(8,8,8,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.flipBtn:hover {
+  background: rgba(244,114,43,0.15);
+  border-color: var(--color-orange);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(244,114,43,0.25);
+}
+
+.flipBtn:active { transform: scale(0.96); }
+
+.flipBtnActive {
+  border-color: var(--color-orange);
+  background: rgba(244,114,43,0.12);
+}
+
+.flipIcon {
+  flex-shrink: 0;
+  transition: transform 0.5s ease;
+}
+
+.flipBtnActive .flipIcon {
+  transform: rotate(180deg);
+}
+
+/* ── Remove old imageFrame aspect-ratio (flipCard takes over) ── */
+.flipFront .imageFrame,
+.flipBack  .imageFrame {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: unset;
+  border-radius: 0;
+  box-shadow: none;
+}
