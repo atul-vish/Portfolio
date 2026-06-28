@@ -125,9 +125,12 @@ export default function AboutParticle() {
 
         delayPerParticle[i] = (Math.sqrt(wx*wx+wy*wy) / (SCALE*0.7)) * 0.5
 
-        colArr[i3]   = Math.min(p.r/200, 1)
-        colArr[i3+1] = Math.min(p.g/200, 1)
-        colArr[i3+2] = Math.min(p.b/200, 1)
+        // Boost saturation: push colors away from grey toward their dominant hue
+        const avg = (p.r + p.g + p.b) / 3
+        const boost = 1.6
+        colArr[i3]   = Math.min(Math.max(avg + (p.r - avg) * boost, 0) / 255, 1)
+        colArr[i3+1] = Math.min(Math.max(avg + (p.g - avg) * boost, 0) / 255, 1)
+        colArr[i3+2] = Math.min(Math.max(avg + (p.b - avg) * boost, 0) / 255, 1)
       })
 
       geo = new THREE.BufferGeometry()
@@ -155,8 +158,19 @@ export default function AboutParticle() {
       points = new THREE.Points(geo, mat)
       scene.add(points)
 
+      // ── Shockwave ring — expands from center at scatter start ──
+      const ringGeo = new THREE.RingGeometry(0.01, 0.04, 64)
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0xf4722b, side: THREE.DoubleSide,
+        transparent: true, opacity: 0
+      })
+      const ring1 = new THREE.Mesh(ringGeo, ringMat)
+      const ring2 = new THREE.Mesh(ringGeo, ringMat.clone())
+      const ring3 = new THREE.Mesh(ringGeo, ringMat.clone())
+      scene.add(ring1, ring2, ring3)
+
       // Orange bokeh
-      const BN = isMobile ? 120 : 250
+      const BN = isMobile ? 200 : 420
       const bGeo = new THREE.BufferGeometry()
       const bPos = new Float32Array(BN*3)
       for (let i=0;i<BN;i++) {
@@ -164,11 +178,25 @@ export default function AboutParticle() {
       }
       bGeo.setAttribute('position', new THREE.BufferAttribute(bPos,3))
       const bMat = new THREE.PointsMaterial({
-        size:0.08, color:0xf4722b, map:tex,
+        size:0.12, color:0xf4722b, map:tex,
         transparent:true, opacity:0,
         blending:THREE.AdditiveBlending, depthWrite:false,
       })
       scene.add(new THREE.Points(bGeo, bMat))
+
+      // Second bokeh layer — white/blue electric sparks
+      const bGeo2 = new THREE.BufferGeometry()
+      const bPos2 = new Float32Array(BN*3)
+      for (let i=0;i<BN;i++) {
+        bPos2[i*3]=(Math.random()-.5)*14; bPos2[i*3+1]=(Math.random()-.5)*9; bPos2[i*3+2]=(Math.random()-.5)*5-2
+      }
+      bGeo2.setAttribute('position', new THREE.BufferAttribute(bPos2,3))
+      const bMat2 = new THREE.PointsMaterial({
+        size:0.05, color:0xb8d8ff, map:tex,
+        transparent:true, opacity:0,
+        blending:THREE.AdditiveBlending, depthWrite:false,
+      })
+      scene.add(new THREE.Points(bGeo2, bMat2))
 
       // ── ScrollTrigger setup (import lazily to avoid SSR issues) ─
       const { gsap } = await import('gsap')
@@ -199,7 +227,9 @@ export default function AboutParticle() {
           }
 
           // Bokeh during scatter
-          bMat.opacity = Math.min(Math.max((sp-0.2)/0.2,0), 0.45)
+          const bokehP = Math.min(Math.max((sp-0.2)/0.2,0), 1)
+          bMat.opacity  = bokehP * 0.55
+          bMat2.opacity = bokehP * 0.35
         }
       })
       myTriggers.push(pinTrigger)
@@ -232,7 +262,9 @@ export default function AboutParticle() {
           const loc = Math.max(0, Math.min((globalT - del)/(1 - del*0.6), 1))
           const e   = easeOut(loc)
 
-          const drift = Math.sin(t*0.7 + i*0.028) * 0.003 * (1-e*0.7)
+          // Chromatic vibration — particles shimmer during scatter
+        const shimmer = Math.sin(t*3.5 + i*0.18) * e * (1-e) * 4 * 0.06
+        const drift = Math.sin(t*0.7 + i*0.028) * 0.003 * (1-e*0.7)
 
           pos[i3]   = targetPos[i3]   + (scatterPos[i3]   - targetPos[i3])*e + drift
           pos[i3+1] = targetPos[i3+1] + (scatterPos[i3+1] - targetPos[i3+1])*e + drift
@@ -240,11 +272,26 @@ export default function AboutParticle() {
         }
         geo.attributes.position.needsUpdate = true
 
-        // Swell to bokeh size at peak scatter
-        mat.size = 0.030 + globalT*(1-globalT)*4*0.055
+        // Dramatic swell at scatter peak — 4× bigger
+        const swell = globalT*(1-globalT)*4
+        mat.size = 0.030 + swell * 0.14
 
         // Gentle rotation while scattered
-        points.rotation.y = globalT * Math.sin(t*0.09) * 0.2
+        points.rotation.y = globalT * Math.sin(t*0.12) * 0.35
+        points.rotation.x = globalT * Math.sin(t*0.08) * 0.12
+
+        // ── Shockwave rings — pulse outward repeatedly during scatter ──
+        const pulseSpeed = 1.4
+        const animateRing = (mesh, offset) => {
+          const phase = ((t * pulseSpeed + offset) % 1)
+          const active = globalT > 0.05
+          const s = active ? 0.5 + phase * 6 : 0.01
+          mesh.scale.setScalar(s)
+          mesh.material.opacity = active ? (1-phase) * globalT * 0.7 : 0
+        }
+        animateRing(ring1, 0)
+        animateRing(ring2, 0.33)
+        animateRing(ring3, 0.66)
 
         // Camera slight drift
         camera.position.x = Math.sin(t*0.14)*0.04
