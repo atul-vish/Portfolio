@@ -59,18 +59,44 @@ const CATEGORIES = [
 ]
 
 const STACK_CARDS = [
-  { name: 'Python',       icon: '🐍', color: '#3b82f6',  tag: 'Core' },
-  { name: 'PyTorch',      icon: '🔥', color: '#ee4c2c',  tag: 'ML' },
-  { name: 'LangChain',    icon: '⛓️', color: '#a78bfa',  tag: 'LLM' },
-  { name: 'OpenAI',       icon: '✦',  color: '#10a37f',  tag: 'GenAI' },
-  { name: 'HuggingFace',  icon: '🤗', color: '#ff9d00',  tag: 'Models' },
-  { name: 'FastAPI',      icon: '⚡', color: '#05998b',  tag: 'API' },
-  { name: 'Next.js',      icon: '▲',  color: '#ffffff',  tag: 'Web' },
-  { name: 'React',        icon: '⚛️', color: '#61dafb',  tag: 'UI' },
-  { name: 'AWS',          icon: '☁️', color: '#f4722b',  tag: 'Cloud' },
-  { name: 'Docker',       icon: '🐳', color: '#2496ed',  tag: 'DevOps' },
-  { name: 'PostgreSQL',   icon: '🐘', color: '#336791',  tag: 'DB' },
-  { name: 'MongoDB',      icon: '🍃', color: '#4db33d',  tag: 'DB' },
+  // Core AI/ML
+  { name: 'Python',        icon: '🐍', color: '#3b82f6',  tag: 'Core'    },
+  { name: 'PyTorch',       icon: '🔥', color: '#ee4c2c',  tag: 'ML'      },
+  { name: 'TensorFlow',    icon: '🧮', color: '#ff6f00',  tag: 'ML'      },
+  { name: 'Scikit-learn',  icon: '📊', color: '#f7931e',  tag: 'ML'      },
+  // LLM / GenAI
+  { name: 'LangChain',     icon: '⛓️', color: '#a78bfa',  tag: 'LLM'     },
+  { name: 'LlamaIndex',    icon: '🦙', color: '#c084fc',  tag: 'LLM'     },
+  { name: 'OpenAI',        icon: '✦',  color: '#10a37f',  tag: 'GenAI'   },
+  { name: 'HuggingFace',   icon: '🤗', color: '#ff9d00',  tag: 'Models'  },
+  { name: 'Ollama',        icon: '🐢', color: '#34d399',  tag: 'Local'   },
+  { name: 'Anthropic',     icon: '◎',  color: '#d97706',  tag: 'GenAI'   },
+  // Vector DBs & RAG
+  { name: 'Pinecone',      icon: '🌲', color: '#00c4b4',  tag: 'VectorDB' },
+  { name: 'ChromaDB',      icon: '🎨', color: '#7c3aed',  tag: 'VectorDB' },
+  { name: 'Weaviate',      icon: '🔷', color: '#3b82f6',  tag: 'VectorDB' },
+  // MLOps
+  { name: 'MLflow',        icon: '📈', color: '#0194e2',  tag: 'MLOps'   },
+  { name: 'Weights & B.',  icon: '🏋️', color: '#ffbe00',  tag: 'MLOps'   },
+  { name: 'Airflow',       icon: '🌪️', color: '#017cee',  tag: 'MLOps'   },
+  // Backend & Cloud
+  { name: 'FastAPI',       icon: '⚡', color: '#05998b',  tag: 'API'     },
+  { name: 'AWS',           icon: '☁️', color: '#f4722b',  tag: 'Cloud'   },
+  { name: 'Docker',        icon: '🐳', color: '#2496ed',  tag: 'DevOps'  },
+  { name: 'Kubernetes',    icon: '⚙️', color: '#326ce5',  tag: 'DevOps'  },
+  // Data
+  { name: 'Pandas',        icon: '🐼', color: '#150458',  tag: 'Data'    },
+  { name: 'Spark',         icon: '✨', color: '#e25a1c',  tag: 'Data'    },
+  { name: 'PostgreSQL',    icon: '🐘', color: '#336791',  tag: 'DB'      },
+  { name: 'Redis',         icon: '🔴', color: '#dc382d',  tag: 'Cache'   },
+  // Frontend
+  { name: 'Next.js',       icon: '▲',  color: '#ffffff',  tag: 'Web'     },
+  { name: 'React',         icon: '⚛️', color: '#61dafb',  tag: 'UI'      },
+  { name: 'TypeScript',    icon: 'TS', color: '#3178c6',  tag: 'Lang'    },
+  // Tools
+  { name: 'Git',           icon: '⌥',  color: '#f05032',  tag: 'VCS'     },
+  { name: 'Jupyter',       icon: '📓', color: '#f37626',  tag: 'Dev'     },
+  { name: 'Linux',         icon: '🐧', color: '#fcc624',  tag: 'OS'      },
 ]
 
 export default function Skills() {
