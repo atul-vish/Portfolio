@@ -60,43 +60,43 @@ const CATEGORIES = [
 
 const STACK_CARDS = [
   // Core AI/ML
-  { name: 'Python',        icon: '🐍', color: '#3b82f6',  tag: 'Core'    },
-  { name: 'PyTorch',       icon: '🔥', color: '#ee4c2c',  tag: 'ML'      },
-  { name: 'TensorFlow',    icon: '🧮', color: '#ff6f00',  tag: 'ML'      },
-  { name: 'Scikit-learn',  icon: '📊', color: '#f7931e',  tag: 'ML'      },
+  { name: 'Python',        icon: '🐍', color: '#3b82f6',  tag: 'Core',    anim: 'wiggle'  },
+  { name: 'PyTorch',       icon: '🔥', color: '#ee4c2c',  tag: 'ML',      anim: 'flicker' },
+  { name: 'TensorFlow',    icon: '🧮', color: '#ff6f00',  tag: 'ML',      anim: 'spin'    },
+  { name: 'Scikit-learn',  icon: '📊', color: '#f7931e',  tag: 'ML',      anim: 'bounce'  },
   // LLM / GenAI
-  { name: 'LangChain',     icon: '⛓️', color: '#a78bfa',  tag: 'LLM'     },
-  { name: 'LlamaIndex',    icon: '🦙', color: '#c084fc',  tag: 'LLM'     },
-  { name: 'OpenAI',        icon: '✦',  color: '#10a37f',  tag: 'GenAI'   },
-  { name: 'HuggingFace',   icon: '🤗', color: '#ff9d00',  tag: 'Models'  },
-  { name: 'Ollama',        icon: '🐢', color: '#34d399',  tag: 'Local'   },
-  { name: 'Anthropic',     icon: '◎',  color: '#d97706',  tag: 'GenAI'   },
+  { name: 'LangChain',     icon: '⛓️', color: '#a78bfa',  tag: 'LLM',     anim: 'swing'   },
+  { name: 'LlamaIndex',    icon: '🦙', color: '#c084fc',  tag: 'LLM',     anim: 'bounce'  },
+  { name: 'OpenAI',        icon: '✦',  color: '#10a37f',  tag: 'GenAI',   anim: 'pulse'   },
+  { name: 'HuggingFace',   icon: '🤗', color: '#ff9d00',  tag: 'Models',  anim: 'bounce'  },
+  { name: 'Ollama',        icon: '🐢', color: '#34d399',  tag: 'Local',   anim: 'float'   },
+  { name: 'Anthropic',     icon: '◎',  color: '#d97706',  tag: 'GenAI',   anim: 'spin'    },
   // Vector DBs & RAG
-  { name: 'Pinecone',      icon: '🌲', color: '#00c4b4',  tag: 'VectorDB' },
-  { name: 'ChromaDB',      icon: '🎨', color: '#7c3aed',  tag: 'VectorDB' },
-  { name: 'Weaviate',      icon: '🔷', color: '#3b82f6',  tag: 'VectorDB' },
+  { name: 'Pinecone',      icon: '🌲', color: '#00c4b4',  tag: 'VectorDB',anim: 'sway'    },
+  { name: 'ChromaDB',      icon: '🎨', color: '#7c3aed',  tag: 'VectorDB',anim: 'shake'   },
+  { name: 'Weaviate',      icon: '🔷', color: '#3b82f6',  tag: 'VectorDB',anim: 'spin'    },
   // MLOps
-  { name: 'MLflow',        icon: '📈', color: '#0194e2',  tag: 'MLOps'   },
-  { name: 'Weights & B.',  icon: '🏋️', color: '#ffbe00',  tag: 'MLOps'   },
-  { name: 'Airflow',       icon: '🌪️', color: '#017cee',  tag: 'MLOps'   },
+  { name: 'MLflow',        icon: '📈', color: '#0194e2',  tag: 'MLOps',   anim: 'bounce'  },
+  { name: 'Weights & B.',  icon: '🏋️', color: '#ffbe00',  tag: 'MLOps',   anim: 'bounce'  },
+  { name: 'Airflow',       icon: '🌪️', color: '#017cee',  tag: 'MLOps',   anim: 'spin'    },
   // Backend & Cloud
-  { name: 'FastAPI',       icon: '⚡', color: '#05998b',  tag: 'API'     },
-  { name: 'AWS',           icon: '☁️', color: '#f4722b',  tag: 'Cloud'   },
-  { name: 'Docker',        icon: '🐳', color: '#2496ed',  tag: 'DevOps'  },
-  { name: 'Kubernetes',    icon: '⚙️', color: '#326ce5',  tag: 'DevOps'  },
+  { name: 'FastAPI',       icon: '⚡', color: '#05998b',  tag: 'API',     anim: 'flicker' },
+  { name: 'AWS',           icon: '☁️', color: '#f4722b',  tag: 'Cloud',   anim: 'float'   },
+  { name: 'Docker',        icon: '🐳', color: '#2496ed',  tag: 'DevOps',  anim: 'sway'    },
+  { name: 'Kubernetes',    icon: '⚙️', color: '#326ce5',  tag: 'DevOps',  anim: 'spin'    },
   // Data
-  { name: 'Pandas',        icon: '🐼', color: '#150458',  tag: 'Data'    },
-  { name: 'Spark',         icon: '✨', color: '#e25a1c',  tag: 'Data'    },
-  { name: 'PostgreSQL',    icon: '🐘', color: '#336791',  tag: 'DB'      },
-  { name: 'Redis',         icon: '🔴', color: '#dc382d',  tag: 'Cache'   },
+  { name: 'Pandas',        icon: '🐼', color: '#150458',  tag: 'Data',    anim: 'wiggle'  },
+  { name: 'Spark',         icon: '✨', color: '#e25a1c',  tag: 'Data',    anim: 'pulse'   },
+  { name: 'PostgreSQL',    icon: '🐘', color: '#336791',  tag: 'DB',      anim: 'bounce'  },
+  { name: 'Redis',         icon: '🔴', color: '#dc382d',  tag: 'Cache',   anim: 'pulse'   },
   // Frontend
-  { name: 'Next.js',       icon: '▲',  color: '#ffffff',  tag: 'Web'     },
-  { name: 'React',         icon: '⚛️', color: '#61dafb',  tag: 'UI'      },
-  { name: 'TypeScript',    icon: 'TS', color: '#3178c6',  tag: 'Lang'    },
+  { name: 'Next.js',       icon: '▲',  color: '#ffffff',  tag: 'Web',     anim: 'bounce'  },
+  { name: 'React',         icon: '⚛️', color: '#61dafb',  tag: 'UI',      anim: 'spin'    },
+  { name: 'TypeScript',    icon: 'TS', color: '#3178c6',  tag: 'Lang',    anim: 'shake'   },
   // Tools
-  { name: 'Git',           icon: '⌥',  color: '#f05032',  tag: 'VCS'     },
-  { name: 'Jupyter',       icon: '📓', color: '#f37626',  tag: 'Dev'     },
-  { name: 'Linux',         icon: '🐧', color: '#fcc624',  tag: 'OS'      },
+  { name: 'Git',           icon: '⌥',  color: '#f05032',  tag: 'VCS',     anim: 'wiggle'  },
+  { name: 'Jupyter',       icon: '📓', color: '#f37626',  tag: 'Dev',     anim: 'sway'    },
+  { name: 'Linux',         icon: '🐧', color: '#fcc624',  tag: 'OS',      anim: 'bounce'  },
 ]
 
 export default function Skills() {
@@ -192,7 +192,7 @@ export default function Skills() {
             {STACK_CARDS.map(t => (
               <div key={t.name} className={styles.stackCard} data-stack-card style={{ '--card-color': t.color }}>
                 <span className={styles.stackTag}>{t.tag}</span>
-                <span className={styles.stackIcon}>{t.icon}</span>
+                <span className={`${styles.stackIcon} ${styles[`anim_${t.anim}`]}`}>{t.icon}</span>
                 <span className={styles.stackName}>{t.name}</span>
                 <div className={styles.stackGlow} />
               </div>

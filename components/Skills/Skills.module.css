@@ -283,3 +283,109 @@
 @media (max-width: 420px) {
   .stackGrid  { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ══════════════════════════════════════════════════════
+   ICON HOVER ANIMATIONS
+   Each triggers only when parent .stackCard is hovered
+══════════════════════════════════════════════════════ */
+
+.stackIcon {
+  display: inline-block;
+  font-size: 1.6rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+  will-change: transform;
+}
+
+/* ── float: gentle up-down levitation ── */
+.stackCard:hover .anim_float {
+  animation: iconFloat 1.8s ease-in-out infinite;
+}
+@keyframes iconFloat {
+  0%,100% { transform: translateY(0px);   }
+  50%      { transform: translateY(-8px);  }
+}
+
+/* ── bounce: springy drop ── */
+.stackCard:hover .anim_bounce {
+  animation: iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) infinite alternate;
+}
+@keyframes iconBounce {
+  0%   { transform: translateY(0px) scale(1);    }
+  100% { transform: translateY(-9px) scale(1.1); }
+}
+
+/* ── spin: continuous rotation ── */
+.stackCard:hover .anim_spin {
+  animation: iconSpin 1.2s linear infinite;
+}
+@keyframes iconSpin {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── wiggle: side-to-side wag ── */
+.stackCard:hover .anim_wiggle {
+  animation: iconWiggle 0.5s ease-in-out infinite;
+}
+@keyframes iconWiggle {
+  0%,100% { transform: rotate(0deg);    }
+  20%     { transform: rotate(-14deg);  }
+  40%     { transform: rotate(14deg);   }
+  60%     { transform: rotate(-8deg);   }
+  80%     { transform: rotate(8deg);    }
+}
+
+/* ── shake: rapid horizontal tremble ── */
+.stackCard:hover .anim_shake {
+  animation: iconShake 0.4s ease-in-out infinite;
+}
+@keyframes iconShake {
+  0%,100% { transform: translateX(0);    }
+  20%     { transform: translateX(-5px); }
+  40%     { transform: translateX(5px);  }
+  60%     { transform: translateX(-4px); }
+  80%     { transform: translateX(4px);  }
+}
+
+/* ── pulse: scale heartbeat ── */
+.stackCard:hover .anim_pulse {
+  animation: iconPulse 0.9s ease-in-out infinite;
+}
+@keyframes iconPulse {
+  0%,100% { transform: scale(1);    }
+  50%     { transform: scale(1.28); }
+}
+
+/* ── flicker: brightness flash ── */
+.stackCard:hover .anim_flicker {
+  animation: iconFlicker 0.6s ease-in-out infinite;
+}
+@keyframes iconFlicker {
+  0%,100% { transform: scale(1);    filter: brightness(1);   }
+  30%     { transform: scale(1.15); filter: brightness(1.6); }
+  60%     { transform: scale(1.05); filter: brightness(0.8); }
+  80%     { transform: scale(1.18); filter: brightness(1.8); }
+}
+
+/* ── sway: pendulum tilt ── */
+.stackCard:hover .anim_sway {
+  animation: iconSway 1.4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@keyframes iconSway {
+  0%,100% { transform: rotate(0deg);    }
+  25%     { transform: rotate(-16deg);  }
+  75%     { transform: rotate(16deg);   }
+}
+
+/* ── swing: arc swing ── */
+.stackCard:hover .anim_swing {
+  animation: iconSwing 1s ease-in-out infinite;
+  transform-origin: top center;
+}
+@keyframes iconSwing {
+  0%,100% { transform: rotate(0deg);   }
+  30%     { transform: rotate(18deg);  }
+  70%     { transform: rotate(-18deg); }
+}
