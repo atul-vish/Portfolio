@@ -64,17 +64,8 @@ export default function VideoIntro() {
   }, [])
 
   // ── Scroll pulse ───────────────────────────────────────────────
-  useEffect(() => {
-    const el = scrollRef.current
-    if (!el) return
-    const line = el.querySelector(`.${styles.scrollLine}`)
-    if (!line) return
-    const anim = gsap.fromTo(line,
-      { scaleY: 0, transformOrigin: 'top center' },
-      { scaleY: 1, transformOrigin: 'top center', duration: 1.1, ease: 'power2.inOut', repeat: -1, yoyo: true }
-    )
-    return () => anim.kill()
-  }, [])
+  // Scroll line pulse is now pure CSS — no JS ticker needed (see .scrollLine animation in CSS module)
+
 
   // ── Start cinematic playback (called on overlay click) ─────────
   const startCinematic = useCallback(() => {

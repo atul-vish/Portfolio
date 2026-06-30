@@ -346,6 +346,14 @@
   height: 40px;
   background: linear-gradient(to bottom, var(--color-orange), transparent);
   transform-origin: top center;
+  transform: scaleY(0);
+  animation: scrollLinePulse 1.1s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes scrollLinePulse {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
 }
 
 /* ── Responsive ───────────────────────────────────────────────── */
