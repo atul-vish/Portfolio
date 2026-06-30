@@ -152,6 +152,10 @@ export default function StarsBackground() {
 
       function animate() {
         animId = requestAnimationFrame(animate)
+
+        // Skip all rendering work while invisible (e.g. during hero video) — saves GPU
+        if (currentOpacity <= 0.01) return
+
         const t = clock.getElapsedTime()
 
         const pos  = geo.attributes.position.array

@@ -150,6 +150,7 @@ export default function VideoIntro() {
           loop
           muted
           playsInline
+          preload="auto"
           aria-hidden="true"
         />
         <div className={styles.bgBlur} />
@@ -162,6 +163,7 @@ export default function VideoIntro() {
           className={styles.fgVideo}
           src="/hero-video.mp4"
           playsInline
+          preload="auto"
           muted
           onEnded={handleEnded}
         />
