@@ -179,9 +179,9 @@ export default function AboutParticle() {
       const pinTrigger = ScrollTrigger.create({
         trigger: section,
         start:   'top top',
-        end:     '+=130%',
+        end:     '+=90%',
         pin:     true,
-        scrub:   1.8,
+        scrub:   0.6,
         onUpdate(self) {
           const sp = self.progress
           progressRef.current = sp
