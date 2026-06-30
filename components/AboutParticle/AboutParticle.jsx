@@ -74,7 +74,7 @@ export default function AboutParticle() {
       // ── Load & sample image ──────────────────────────────────
       const img = new window.Image()
       img.crossOrigin = 'anonymous'
-      img.src = '/portfolio-image.png'
+      img.src = '/portfolio-image.webp'
       await new Promise(res => { img.onload = res; img.onerror = res })
 
       const GRID = isMobile ? 90 : 120
@@ -286,7 +286,7 @@ export default function AboutParticle() {
       {/* Real avatar shown at start, fades as particles take over */}
       <div className={styles.avatarCenter}>
         <div className={styles.avatarFrame} ref={avatarImgRef}>
-          <Image src="/portfolio-image.png" alt="Atul" fill
+          <Image src="/portfolio-image.webp" alt="Atul" fill
             style={{ objectFit:'cover', objectPosition:'center 10%' }}
             quality={100} priority />
           <div className={styles.avatarRing} />
@@ -314,7 +314,7 @@ export default function AboutParticle() {
               {/* Front: avatar */}
               <div className={styles.flipFront}>
                 <div className={styles.imageFrame}>
-                  <Image src="/portfolio-image.png" alt="Atul — AI/ML Engineer" fill
+                  <Image src="/portfolio-image.webp" alt="Atul — AI/ML Engineer" fill
                     style={{ objectFit:'cover', objectPosition:'center 8%' }}
                     quality={100} priority />
                 </div>

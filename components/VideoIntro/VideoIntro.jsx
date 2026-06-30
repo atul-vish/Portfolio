@@ -155,6 +155,9 @@ export default function VideoIntro() {
           playsInline
           preload="auto"
           muted
+          disablePictureInPicture
+          disableRemotePlayback
+          controls={false}
           onEnded={handleEnded}
         />
         <div className={styles.videoVignette} />
