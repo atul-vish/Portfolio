@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { gsap } from 'gsap'
+import Image from 'next/image'
 import styles from './VideoIntro.module.css'
 
 export default function VideoIntro() {
   const heroRef      = useRef(null)
   const videoRef     = useRef(null)
-  const bgVideoRef   = useRef(null)
   const contentRef   = useRef(null)
   const taglineRef   = useRef(null)
   const firstNameRef = useRef(null)
@@ -78,8 +78,7 @@ export default function VideoIntro() {
 
   // ── Start cinematic playback (called on overlay click) ─────────
   const startCinematic = useCallback(() => {
-    const v  = videoRef.current
-    const bg = bgVideoRef.current
+    const v = videoRef.current
     if (!v) return
 
     // Fade out overlay
@@ -98,23 +97,17 @@ export default function VideoIntro() {
       v.play().then(() => { v.muted = false; v.volume = 1 })
     })
 
-    // BG video stays muted (ambient only)
-    if (bg) { bg.currentTime = 0; bg.play() }
-
     setPaused(false)
   }, [])
 
   // ── Video ended → show replay ──────────────────────────────────
   const handleEnded = useCallback(() => {
     setPhase('ended')
-    // Pause bg video too
-    if (bgVideoRef.current) bgVideoRef.current.pause()
   }, [])
 
   // ── Replay ────────────────────────────────────────────────────
   const handleReplay = useCallback(() => {
-    const v  = videoRef.current
-    const bg = bgVideoRef.current
+    const v = videoRef.current
     if (!v) return
     setPhase('playing')
     v.currentTime = 0
@@ -140,17 +133,14 @@ export default function VideoIntro() {
   return (
     <section className={styles.hero} ref={heroRef}>
 
-      {/* ── Ambient BG video (always muted, loops) ── */}
+      {/* ── Ambient BG — static pre-blurred image (no second video decode) ── */}
       <div className={styles.bgVideoWrap}>
-        <video
-          ref={bgVideoRef}
+        <Image
+          src="/hero-bg-blurred.jpg"
+          alt=""
+          fill
           className={styles.bgVideo}
-          src="/hero-video.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
+          priority
           aria-hidden="true"
         />
         <div className={styles.bgBlur} />
