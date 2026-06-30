@@ -96,8 +96,8 @@ export default function StarsBackground() {
         colors[i3 + 2] = c.b
 
         phases[i]     = Math.random() * Math.PI * 2
-        speeds[i]     = 0.1 + Math.random() * 0.35
-        amplitudes[i] = 0.03 + Math.random() * 0.12
+        speeds[i]     = 0.3 + Math.random() * 0.9
+        amplitudes[i] = 0.15 + Math.random() * 0.45
       }
 
       geo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
@@ -142,6 +142,9 @@ export default function StarsBackground() {
       const points = new THREE.Points(geo, mat)
       scene.add(points)
 
+      // Store original positions — float oscillates around these, not cumulatively
+      const origPos = new Float32Array(positions)
+
       // ── Subtle twinkle — vary opacity per frame slightly ───────
       let clock = new THREE.Clock()
       const twinkle = new Float32Array(COUNT)
@@ -156,23 +159,28 @@ export default function StarsBackground() {
 
         for (let i = 0; i < COUNT; i++) {
           const i3 = i * 3
-          // Gentle float
-          pos[i3 + 1] += Math.sin(t * speeds[i] + phases[i]) * amplitudes[i] * 0.006
-          pos[i3]     += Math.cos(t * speeds[i] * 0.6 + phases[i]) * amplitudes[i] * 0.003
+          // Stronger orbital float — bigger drift radius, faster cycles
+          pos[i3 + 1] = origPos[i3 + 1] + Math.sin(t * speeds[i] + phases[i]) * amplitudes[i]
+          pos[i3]     = origPos[i3]     + Math.cos(t * speeds[i] * 0.8 + phases[i]) * amplitudes[i] * 0.8
+          pos[i3 + 2] = origPos[i3 + 2] + Math.sin(t * speeds[i] * 0.5 + phases[i]) * amplitudes[i] * 0.4
 
-          // Twinkle size oscillation
+          // Twinkle size oscillation — faster, more dramatic
           const base = sizesArr[i]
-          size[i] = base * (0.75 + 0.25 * Math.sin(t * (1 + speeds[i]) + twinkle[i]))
+          size[i] = base * (0.6 + 0.5 * Math.sin(t * (1.5 + speeds[i]) + twinkle[i]))
         }
 
         geo.attributes.position.needsUpdate = true
         geo.attributes.size.needsUpdate     = true
 
-        // Mouse parallax
-        target.x += (mouse.x - target.x) * 0.025
-        target.y += (mouse.y - target.y) * 0.025
-        camera.position.x = target.x * 0.5
-        camera.position.y = -target.y * 0.3
+        // Slow continuous drift rotation — entire starfield rotates like real sky motion
+        points.rotation.z = t * 0.012
+        points.rotation.y = Math.sin(t * 0.05) * 0.08
+
+        // Stronger mouse parallax
+        target.x += (mouse.x - target.x) * 0.04
+        target.y += (mouse.y - target.y) * 0.04
+        camera.position.x = target.x * 0.9
+        camera.position.y = -target.y * 0.5
         camera.lookAt(scene.position)
 
         renderer.render(scene, camera)
