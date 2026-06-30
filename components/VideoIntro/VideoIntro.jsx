@@ -72,11 +72,8 @@ export default function VideoIntro() {
     const v = videoRef.current
     if (!v) return
 
-    // Fade out overlay
-    gsap.to(overlayRef.current, {
-      opacity: 0, duration: 0.6, ease: 'power2.out',
-      onComplete: () => setPhase('playing')
-    })
+    // Unmount overlay immediately — no compositing over the live video
+    setPhase('playing')
 
     // Play foreground with full volume
     v.currentTime = 0
