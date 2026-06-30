@@ -179,7 +179,7 @@ export default function AboutParticle() {
       const pinTrigger = ScrollTrigger.create({
         trigger: section,
         start:   'top top',
-        end:     '+=250%',
+        end:     '+=130%',
         pin:     true,
         scrub:   1.8,
         onUpdate(self) {
@@ -189,7 +189,7 @@ export default function AboutParticle() {
           // Real avatar image fades out BEFORE scatter starts (0.0→0.12), fully gone by 0.12
           const imgEl = avatarImgRef.current
           if (imgEl) {
-            const imgOp = Math.max(0, 1 - Math.min(sp / 0.12, 1))
+            const imgOp = Math.max(0, 1 - Math.min(sp / 0.10, 1))
             imgEl.style.opacity  = imgOp
             imgEl.style.filter   = `blur(${(1-imgOp)*8}px)`
             imgEl.style.transform = `scale(${1 - (1-imgOp)*0.06})`
@@ -198,7 +198,7 @@ export default function AboutParticle() {
           // About section fades in 0.35→0.55, stays visible
           const aboutEl = aboutRef.current
           if (aboutEl) {
-            const op = easeOut(Math.max(0, Math.min((sp-0.48)/0.18, 1)))
+            const op = easeOut(Math.max(0, Math.min((sp-0.42)/0.16, 1)))
             aboutEl.style.opacity  = op
             aboutEl.style.transform = `translateY(${(1-op)*22}px)`
           }
@@ -218,17 +218,17 @@ export default function AboutParticle() {
         const sp = progressRef.current
 
         // Scatter phases (image is completely gone before scatter begins):
-        // 0.00→0.14 : image fading, particles assembling (globalT = 0)
-        // 0.14→0.18 : fully assembled — brief pause for effect
-        // 0.18→0.62 : smooth scatter outward
-        // 0.62→1.00 : stay scattered, about section visible
+        // 0.00→0.10 : image fading, particles assembling (globalT = 0)
+        // 0.10→0.14 : fully assembled — brief pause for effect
+        // 0.14→0.55 : smooth scatter outward
+        // 0.55→1.00 : about fully visible, minimal extra scroll before release
         let globalT
-        if      (sp < 0.18) globalT = 0
-        else if (sp < 0.62) globalT = easeInOut((sp - 0.18) / 0.44)
+        if      (sp < 0.14) globalT = 0
+        else if (sp < 0.55) globalT = easeInOut((sp - 0.14) / 0.41)
         else                globalT = 1
 
         // Particles cross-fade in as image fades out — seamless handoff
-        mat.opacity = Math.min(sp / 0.12, 1)
+        mat.opacity = Math.min(sp / 0.10, 1)
 
         const pos = geo.attributes.position.array
 

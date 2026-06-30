@@ -192,7 +192,7 @@ export default function Skills() {
             {STACK_CARDS.map(t => (
               <div key={t.name} className={styles.stackCard} data-stack-card style={{ '--card-color': t.color }}>
                 <span className={styles.stackTag}>{t.tag}</span>
-                <span className={`${styles.stackIcon} ${styles[`anim_${t.anim}`]}`}>{t.icon}</span>
+                <span className={styles.stackIcon} data-anim={t.anim}>{t.icon}</span>
                 <span className={styles.stackName}>{t.name}</span>
                 <div className={styles.stackGlow} />
               </div>

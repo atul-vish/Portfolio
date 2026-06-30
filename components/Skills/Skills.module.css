@@ -298,7 +298,7 @@
 }
 
 /* ── float: gentle up-down levitation ── */
-.stackCard:hover .anim_float {
+.stackCard:hover [data-anim="float"] {
   animation: iconFloat 1.8s ease-in-out infinite;
 }
 @keyframes iconFloat {
@@ -307,7 +307,7 @@
 }
 
 /* ── bounce: springy drop ── */
-.stackCard:hover .anim_bounce {
+.stackCard:hover [data-anim="bounce"] {
   animation: iconBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) infinite alternate;
 }
 @keyframes iconBounce {
@@ -316,7 +316,7 @@
 }
 
 /* ── spin: continuous rotation ── */
-.stackCard:hover .anim_spin {
+.stackCard:hover [data-anim="spin"] {
   animation: iconSpin 1.2s linear infinite;
 }
 @keyframes iconSpin {
@@ -325,7 +325,7 @@
 }
 
 /* ── wiggle: side-to-side wag ── */
-.stackCard:hover .anim_wiggle {
+.stackCard:hover [data-anim="wiggle"] {
   animation: iconWiggle 0.5s ease-in-out infinite;
 }
 @keyframes iconWiggle {
@@ -337,7 +337,7 @@
 }
 
 /* ── shake: rapid horizontal tremble ── */
-.stackCard:hover .anim_shake {
+.stackCard:hover [data-anim="shake"] {
   animation: iconShake 0.4s ease-in-out infinite;
 }
 @keyframes iconShake {
@@ -349,7 +349,7 @@
 }
 
 /* ── pulse: scale heartbeat ── */
-.stackCard:hover .anim_pulse {
+.stackCard:hover [data-anim="pulse"] {
   animation: iconPulse 0.9s ease-in-out infinite;
 }
 @keyframes iconPulse {
@@ -358,7 +358,7 @@
 }
 
 /* ── flicker: brightness flash ── */
-.stackCard:hover .anim_flicker {
+.stackCard:hover [data-anim="flicker"] {
   animation: iconFlicker 0.6s ease-in-out infinite;
 }
 @keyframes iconFlicker {
@@ -369,7 +369,7 @@
 }
 
 /* ── sway: pendulum tilt ── */
-.stackCard:hover .anim_sway {
+.stackCard:hover [data-anim="sway"] {
   animation: iconSway 1.4s ease-in-out infinite;
   transform-origin: bottom center;
 }
@@ -380,7 +380,7 @@
 }
 
 /* ── swing: arc swing ── */
-.stackCard:hover .anim_swing {
+.stackCard:hover [data-anim="swing"] {
   animation: iconSwing 1s ease-in-out infinite;
   transform-origin: top center;
 }
