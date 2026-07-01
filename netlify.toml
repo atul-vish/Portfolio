@@ -1,0 +1,43 @@
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# ── Video files — enable byte-range streaming + long cache ──────
+[[headers]]
+  for = "/*.mp4"
+  [headers.values]
+    Accept-Ranges          = "bytes"
+    Content-Type           = "video/mp4"
+    Cache-Control          = "public, max-age=31536000, immutable"
+    X-Content-Type-Options = "nosniff"
+
+# ── Images — long cache ─────────────────────────────────────────
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ── JS/CSS — versioned chunks, long cache ───────────────────────
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ── HTML — always revalidate ────────────────────────────────────
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
