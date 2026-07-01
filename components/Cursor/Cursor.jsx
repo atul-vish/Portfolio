@@ -8,46 +8,61 @@ export default function Cursor() {
   const ringRef = useRef(null)
 
   useEffect(() => {
-    // Skip on touch devices
     if (window.matchMedia('(pointer: coarse)').matches) return
 
     let mx = 0, my = 0
     let rx = 0, ry = 0
-    let raf
-
-    const onMove = e => {
-      mx = e.clientX
-      my = e.clientY
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${mx}px, ${my}px)`
-      }
-    }
+    let raf = null
+    let moving = false
+    let stopTimer = null
 
     const lerp = (a, b, t) => a + (b - a) * t
 
     const tick = () => {
-      rx = lerp(rx, mx, 0.1)
-      ry = lerp(ry, my, 0.1)
+      rx = lerp(rx, mx, 0.12)
+      ry = lerp(ry, my, 0.12)
+
       if (ringRef.current) {
         ringRef.current.style.transform = `translate(${rx}px, ${ry}px)`
       }
+
+      // Stop RAF when ring has caught up to dot (within 0.5px)
+      if (Math.abs(rx - mx) < 0.5 && Math.abs(ry - my) < 0.5) {
+        moving = false
+        raf = null
+        return
+      }
+
       raf = requestAnimationFrame(tick)
     }
 
-    // Grow ring on interactive elements
+    const onMove = e => {
+      mx = e.clientX
+      my = e.clientY
+
+      // Dot follows instantly — no JS loop needed, direct style set
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${mx}px, ${my}px)`
+      }
+
+      // Only start RAF if not already running
+      if (!moving) {
+        moving = true
+        raf = requestAnimationFrame(tick)
+      }
+    }
+
     const onEnter = () => ringRef.current?.classList.add(styles.large)
     const onLeave = () => ringRef.current?.classList.remove(styles.large)
 
-    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mousemove', onMove, { passive: true })
     document.querySelectorAll('a, button').forEach(el => {
       el.addEventListener('mouseenter', onEnter)
       el.addEventListener('mouseleave', onLeave)
     })
 
-    tick()
-
     return () => {
-      cancelAnimationFrame(raf)
+      if (raf) cancelAnimationFrame(raf)
       document.removeEventListener('mousemove', onMove)
     }
   }, [])
