@@ -1,117 +1,38 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { gsap } from 'gsap'
+import { useRef, useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import styles from './VideoIntro.module.css'
 
 export default function VideoIntro() {
-  const heroRef      = useRef(null)
-  const videoRef     = useRef(null)
-  const contentRef   = useRef(null)
-  const taglineRef   = useRef(null)
-  const firstNameRef = useRef(null)
-  const lastNameRef  = useRef(null)
-  const subtitleRef  = useRef(null)
-  const controlsRef  = useRef(null)
-  const scrollRef    = useRef(null)
-  const overlayRef   = useRef(null)
+  const videoRef  = useRef(null)
+  const [muted,   setMuted]   = useState(true)
+  const [ended,   setEnded]   = useState(false)
+  const [loaded,  setLoaded]  = useState(false)
 
-  // 'idle' = showing click-to-play overlay, 'playing' = video running, 'ended' = show replay
-  const [phase, setPhase] = useState('idle')
-  const [paused, setPaused] = useState(false)
-
-  // ── GSAP entrance ──────────────────────────────────────────────
+  // Video autoplays muted on mount — no click needed, no buffering stall
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-      tl.fromTo(heroRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 1.2 }
-      )
-      .fromTo(taglineRef.current,
-        { opacity: 0, y: 24, letterSpacing: '0.6em' },
-        { opacity: 1, y: 0, letterSpacing: '0.22em', duration: 0.9 },
-        '-=0.5'
-      )
-      .fromTo(firstNameRef.current,
-        { opacity: 0, y: 60, skewY: 4 },
-        { opacity: 1, y: 0, skewY: 0, duration: 1 },
-        '-=0.5'
-      )
-      .fromTo(lastNameRef.current,
-        { opacity: 0, y: 60, skewY: 4 },
-        { opacity: 1, y: 0, skewY: 0, duration: 1 },
-        '-=0.75'
-      )
-      .fromTo(subtitleRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8 },
-        '-=0.5'
-      )
-      .fromTo(controlsRef.current,
-        { opacity: 0, y: 12 },
-        { opacity: 1, y: 0, duration: 0.6 },
-        '-=0.4'
-      )
-      .fromTo(scrollRef.current,
-        { opacity: 0, y: -10 },
-        { opacity: 1, y: 0, duration: 0.6 },
-        '-=0.3'
-      )
-    }, heroRef)
-    return () => ctx.revert()
-  }, [])
-
-  // ── Scroll pulse ───────────────────────────────────────────────
-  // Scroll line pulse is now pure CSS — no JS ticker needed (see .scrollLine animation in CSS module)
-
-
-  // ── Start cinematic playback (called on overlay click) ─────────
-  const startCinematic = useCallback(() => {
     const v = videoRef.current
     if (!v) return
-
-    // Unmount overlay immediately — no compositing over the live video
-    setPhase('playing')
-
-    // Play foreground with full volume
-    v.currentTime = 0
-    v.muted       = false
-    v.volume      = 1
-    v.play().catch(() => {
-      // Fallback if browser still blocks — play muted then ramp up
-      v.muted = true
-      v.play().then(() => { v.muted = false; v.volume = 1 })
-    })
-
-    setPaused(false)
+    v.muted = true
+    v.play().catch(() => {})
   }, [])
 
-  // ── Video ended → show replay ──────────────────────────────────
-  const handleEnded = useCallback(() => {
-    setPhase('ended')
+  const toggleMute = useCallback(() => {
+    const v = videoRef.current
+    if (!v) return
+    v.muted = !v.muted
+    setMuted(v.muted)
   }, [])
 
-  // ── Replay ────────────────────────────────────────────────────
   const handleReplay = useCallback(() => {
     const v = videoRef.current
     if (!v) return
-    setPhase('playing')
     v.currentTime = 0
-    v.muted       = false
-    v.volume      = 1
-    v.play()
-    if (bg) { bg.currentTime = 0; bg.play() }
-    setPaused(false)
-  }, [])
-
-  // ── Pause / Resume ────────────────────────────────────────────
-  const togglePlay = useCallback(() => {
-    const v = videoRef.current
-    if (!v) return
-    if (v.paused) { v.play(); setPaused(false) }
-    else          { v.pause(); setPaused(true) }
+    v.muted = false
+    v.play().catch(() => { v.muted = true; v.play() })
+    setMuted(false)
+    setEnded(false)
   }, [])
 
   const scrollToNext = useCallback(() => {
@@ -119,129 +40,102 @@ export default function VideoIntro() {
   }, [])
 
   return (
-    <section className={styles.hero} ref={heroRef}>
+    <section className={styles.hero}>
 
-      {/* ── Ambient BG — static pre-blurred image (no second video decode) ── */}
-      <div className={styles.bgVideoWrap}>
+      {/* Static blurred bg — no second video decode */}
+      <div className={styles.bgWrap} aria-hidden="true">
         <Image
           src="/hero-bg-blurred.jpg"
           alt=""
           fill
-          className={styles.bgVideo}
           priority
-          aria-hidden="true"
+          className={styles.bgImg}
         />
-        <div className={styles.bgBlur} />
       </div>
 
-      {/* ── Foreground video (plays once with sound) ── */}
-      <div className={styles.fgVideoWrap}>
-        <video
-          ref={videoRef}
-          className={styles.fgVideo}
-          src="/hero-video.mp4"
-          playsInline
-          preload="auto"
-          muted
-          disablePictureInPicture
-          disableRemotePlayback
-          controls={false}
-          onEnded={handleEnded}
-        />
-        <div className={styles.videoVignette} />
-      </div>
+      {/* Single video element — autoplay muted, GPU layer promoted */}
+      <video
+        ref={videoRef}
+        className={styles.video}
+        src="/hero-video.mp4"
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        disablePictureInPicture
+        disableRemotePlayback
+        onCanPlay={() => setLoaded(true)}
+        onEnded={() => setEnded(true)}
+      />
 
+      {/* Cinematic dark overlays */}
+      <div className={styles.overlayBottom} />
+      <div className={styles.overlayTop}    />
+      <div className={styles.overlaySides}  />
+      <div className={styles.vignette}      />
 
-      {/* ── Gradient overlays ── */}
-      <div className={styles.gradientBottom} />
-      <div className={styles.gradientTop}    />
-      <div className={styles.gradientLeft}   />
-      <div className={styles.gradientRight}  />
-
-      {/* ══════════════════════════════════════════════════════════
-          PHASE: IDLE — Click to Watch overlay
-      ══════════════════════════════════════════════════════════ */}
-      {phase === 'idle' && (
-        <div className={styles.watchOverlay} ref={overlayRef}>
-          <button className={styles.watchBtn} onClick={startCinematic} aria-label="Watch cinematic intro with sound">
-            <span className={styles.watchRing} />
-            <span className={styles.watchRing2} />
-            <svg className={styles.watchIcon} width="28" height="28" viewBox="0 0 28 28" fill="currentColor">
-              <path d="M6 4l18 10L6 24V4z"/>
-            </svg>
-          </button>
-          <p className={styles.watchLabel}>Watch Intro</p>
-          <p className={styles.watchSub}>with sound · 30 sec</p>
-        </div>
-      )}
-
-      {/* ══════════════════════════════════════════════════════════
-          PHASE: ENDED — Replay overlay
-      ══════════════════════════════════════════════════════════ */}
-      {phase === 'ended' && (
-        <div className={styles.replayOverlay}>
-          <div className={styles.replayCard}>
-            <button className={styles.replayBtn} onClick={handleReplay} aria-label="Replay cinematic intro">
-              {/* Replay icon */}
-              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M1 4v6h6"/>
-                <path d="M3.51 15a10 10 0 1 0 .49-4.5"/>
-              </svg>
-            </button>
-            <span className={styles.replayLabel}>Replay</span>
-          </div>
-        </div>
-      )}
-
-      {/* ── Main content ── */}
-      <div className={styles.content} ref={contentRef}>
-
-        <span className={styles.tagline} ref={taglineRef}>
+      {/* Hero content — pure CSS animations, zero GSAP on this section */}
+      <div className={styles.content}>
+        <span className={styles.tagline}>
           AI/ML Engineer &nbsp;·&nbsp; LLM &nbsp;·&nbsp; Gen AI &nbsp;·&nbsp; Open to Work
         </span>
 
-        <div className={styles.nameBlock}>
-          <h1 className={styles.firstName} ref={firstNameRef}>Atul</h1>
-          <h1 className={styles.lastName}  ref={lastNameRef}>.</h1>
+        <div className={styles.nameWrap}>
+          <h1 className={styles.name}>Atul<span className={styles.dot}>.</span></h1>
         </div>
 
-        <p className={styles.subtitle} ref={subtitleRef}>
+        <p className={styles.subtitle}>
           Building intelligent AI systems &amp; LLM-powered apps,<br />
           scalable ML pipelines &amp; impactful digital products.
         </p>
 
-        {/* ── Controls (pause/resume during playback) ── */}
-        <div className={styles.controls} ref={controlsRef}>
-          {phase === 'playing' && (
-            <button
-              className={styles.ctrlBtn}
-              onClick={togglePlay}
-              aria-label={paused ? 'Resume video' : 'Pause video'}
-            >
-              {paused ? (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M3 2.5l10 5.5-10 5.5V2.5z"/>
-                </svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                  <rect x="3" y="2" width="4" height="12" rx="1"/>
-                  <rect x="9" y="2" width="4" height="12" rx="1"/>
-                </svg>
-              )}
-            </button>
+        {/* Controls */}
+        <div className={styles.controls}>
+          {/* Mute toggle */}
+          <button
+            className={styles.ctrlBtn}
+            onClick={toggleMute}
+            aria-label={muted ? 'Unmute video' : 'Mute video'}
+          >
+            {muted ? (
+              /* Muted */
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 2L4 5H1v6h3l4 3V2z"/>
+                <line x1="11" y1="6" x2="15" y2="10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="15" y1="6" x2="11" y2="10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            ) : (
+              /* Unmuted */
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 2L4 5H1v6h3l4 3V2z"/>
+                <path d="M11 5.5a4 4 0 010 5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+                <path d="M13 3.5a7 7 0 010 9" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+              </svg>
+            )}
+          </button>
+
+          {/* Tap for sound hint — only shown while muted */}
+          {muted && (
+            <span className={styles.soundHint}>Tap for sound</span>
           )}
         </div>
-
       </div>
 
-      {/* ── Scroll indicator ── */}
-      <button
-        className={styles.scrollIndicator}
-        ref={scrollRef}
-        onClick={scrollToNext}
-        aria-label="Scroll to next section"
-      >
-        <span className={styles.scrollLabel}>Scroll</span>
+      {/* Replay overlay — only after video ends */}
+      {ended && (
+        <div className={styles.replayOverlay}>
+          <button className={styles.replayBtn} onClick={handleReplay} aria-label="Replay intro">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4"/>
+            </svg>
+            <span>Replay</span>
+          </button>
+        </div>
+      )}
+
+      {/* Scroll indicator */}
+      <button className={styles.scrollBtn} onClick={scrollToNext} aria-label="Scroll down">
+        <span className={styles.scrollTxt}>Scroll</span>
         <span className={styles.scrollLine} />
       </button>
 

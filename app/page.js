@@ -9,38 +9,33 @@ import Projects      from '@/components/Projects/Projects'
 import Contact       from '@/components/Contact/Contact'
 import Footer        from '@/components/Footer/Footer'
 
-// Lazy-load StarsBackground — don't even import it until after hero
-const StarsBackground = dynamic(() => import('@/components/StarsBackground/StarsBackground'), {
-  ssr: false,
-  loading: () => null,
-})
+// Stars load ONLY after user scrolls past hero — keeps hero GPU clean for video
+const StarsBackground = dynamic(
+  () => import('@/components/StarsBackground/StarsBackground'),
+  { ssr: false, loading: () => null }
+)
 
 export default function Home() {
   const [showStars, setShowStars] = useState(false)
-  const sentinelRef = useRef(null)
+  const triggerRef = useRef(null)
 
   useEffect(() => {
-    // Only mount StarsBackground once user scrolls past hero
-    // This frees CPU/GPU/network entirely for video during initial load
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShowStars(true)
-          observer.disconnect()
-        }
-      },
+    const el = triggerRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setShowStars(true); obs.disconnect() } },
       { threshold: 0.1 }
     )
-    if (sentinelRef.current) observer.observe(sentinelRef.current)
-    return () => observer.disconnect()
+    obs.observe(el)
+    return () => obs.disconnect()
   }, [])
 
   return (
     <main>
       {showStars && <StarsBackground />}
       <VideoIntro />
-      {/* Sentinel — sits at top of sections, triggers star load on scroll */}
-      <div ref={sentinelRef} style={{ height: 1 }} />
+      {/* Trigger: first pixel below hero causes stars to load */}
+      <div ref={triggerRef} style={{ height: 1 }} />
       <div className="sections-wrap">
         <AboutParticle />
         <Skills />
